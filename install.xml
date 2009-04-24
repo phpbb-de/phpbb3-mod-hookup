@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<!-- $Id$ -->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+
+		<title lang="en">Hookup Mod</title>
+		<title lang="de">Hookup Mod</title>
+
+		<description lang="en">This mod adds the possibility of scheduling meetings with multiple people to your topics. Use this mod for finding the right date for a meeting very easy or for getting feedback on availability of users on certain dates.</description>
+		<description lang="de">Dieser Mod fügt die Möglichkeit für Terminabsprachen mit mehreren Personen hinzu. Benutze diesen Mod um das richtige Datum für ein Meeting mit vielen Usern zu finden oder um Feedback zur Verfügbarkeit der User an bestimmten Terminen zu bekommen</description>
+
+		<author-notes lang="en"></author-notes>
+		<author-notes lang="de"></author-notes>
+
+		<author-group>
+			<author>
+				<realname>Frank Dreyer</realname>
+				<username>Pyramide</username>
+				<homepage>http://www.phpbb.de</homepage>
+			</author>
+			<author>
+				<realname>Martin Beckmann</realname>
+				<username>gn#36</username>
+				<homepage>http://www.phpbb.de</homepage>
+			</author>
+			<author>
+				<realname>Joas Schilling</realname>
+				<username>nickvergessen</username>
+				<email>nickvergessen@gmx.de</email>
+				<homepage>http://www.flying-bits.org</homepage>
+			</author>
+		</author-group>
+
+		<mod-version>1.0.0</mod-version>
+
+		<installation>
+			<level>intermediate</level>
+			<time>1800</time>
+			<target-version>3.0.4</target-version>
+		</installation>
+
+		<history>
+			<entry>
+				<date>2009-MM-DD</date>
+				<rev-version>1.0.0</rev-version>
+				<changelog lang="en">
+					<change>Initial Mod release</change>
+				</changelog>
+				<changelog lang="de">
+					<change>Erste Mod Veröffentlichung</change>
+				</changelog>
+			</entry>
+		</history>
+
+		<link-group>
+			<link type="language" href="contrib/de.xml" lang="en">Installation Changes for German language</link>
+			<link type="language" href="contrib/de.xml" lang="de">Installationsanleitung für die deutsche Sprache</link>
+			<link type="contrib" href="contrib/mod-compatibility.xml" lang="de">Mod Kompatibilität mit anderen Mods (Änderungsanleitungen)</link>
+			<link type="contrib" href="contrib/mod-compatibility.xml" lang="en">Mod compatibilty with other mods (Change instructions)</link>
+		</link-group>
+	</header>
+
+	<action-group>
+		<sql><![CDATA[INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('f_hookup', 0, 1, 0);
+
+CREATE TABLE `phpbb_hookup_available` (
+	`date_id` int(11) NOT NULL default '0',
+	`topic_id` int(11) NOT NULL default '0',
+	`user_id` int(11) NOT NULL default '0',
+	`available` smallint(6) NOT NULL default '1',
+	PRIMARY KEY  (`date_id`,`user_id`),
+	KEY `date_id` (`date_id`),
+	KEY `topic_id` (`topic_id`),
+	KEY `topic_user_id` (`topic_id`,`user_id`)
+);
+
+CREATE TABLE `phpbb_hookup_dates` (
+	`date_id` int(11) NOT NULL auto_increment,
+	`topic_id` int(11) NOT NULL default '0',
+	`date_time` int(11) NOT NULL default '0',
+	PRIMARY KEY  (`date_id`),
+	KEY `topic_id` (`topic_id`)
+);
+
+CREATE TABLE `phpbb_hookup_members` (
+	`topic_id` int(11) NOT NULL default '0',
+	`user_id` int(11) NOT NULL default '0',
+	`notify_status` tinyint(1) NOT NULL default '0',
+	`comment` VARCHAR( 255 ) NOT NULL DEFAULT '',
+	PRIMARY KEY  (`topic_id`,`user_id`),
+	KEY `topic_id` (`topic_id`)
+);
+
+ALTER TABLE `phpbb_topics`
+	ADD `hookup_enabled` tinyint(1) NOT NULL default '0',
+	ADD `hookup_active_date` int(11) default NULL,
+	ADD `hookup_self_invite` tinyint(1) NOT NULL default '0'
+;]]></sql>
+
+		<copy>
+			<file from="root/includes/*.*" to="includes/*.*" />
+			<file from="root/language/en/mods/*.*" to="language/en/mods/*.*" />
+			<file from="root/language/en/email/*.*" to="language/en/email/*.*" />
+			<file from="root/styles/prosilver/template/*.*" to="styles/prosilver/template/*.*" />
+			<file from="root/styles/prosilver/theme/*.*" to="styles/prosilver/theme/*.*" />
+		</copy>
+
+		<open src="posting.php">
+			<edit>
+				<find><![CDATA[if ($mode != 'edit')
+{
+	$post_data['enable_sig']		= ($config['allow_sig'] && $user->optionget('attachsig')) ? true: false;
+	$post_data['enable_smilies']	= ($config['allow_smilies'] && $user->optionget('smilies')) ? true : false;
+	$post_data['enable_bbcode']		= ($config['allow_bbcode'] && $user->optionget('bbcode')) ? true : false;
+	$post_data['enable_urls']		= true;]]></find>
+				<action type="after-add"><![CDATA[	//Hookup Mod
+	$post_data['hookup_enabled'] = false;
+	$post_data['hookup_self_invite'] = false;]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[// Save Draft
+if ($save && $user->data['is_registered'] && $auth->acl_get('u_savedrafts') && ($mode == 'reply' || $mode == 'post' || $mode == 'quote'))
+{]]></find>
+				<action type="before-add"><![CDATA[//Hookup Mod
+$hookup_status = ($auth->acl_get('f_hookup', $forum_id)) ? true : false;]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	if ($config['allow_topic_notify'] && $user->data['is_registered'])
+	{
+		$notify = (isset($_POST['notify'])) ? true : false;
+	}]]></find>
+				<action type="before-add"><![CDATA[	//Hookup-Mod
+	$post_data['hookup_enabled']		= ($hookup_status && isset($_POST['hookup_enabled'])) ? true : false;
+	$post_data['hookup_self_invite']	= ($hookup_status && isset($_POST['hookup_self_invite'])) ? true : false;
+]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[// Delete Poll
+	if ($poll_delete && $mode == 'edit' && sizeof($post_data['poll_options']) &&]]></find>
+				<action type="before-add"><![CDATA[	//Hookup mod
+	if($submit && ($mode == 'post' || ($mode == 'edit' && $post_id == $post_data['topic_first_post_id'])) && !$post_data['hookup_enabled'])
+	{
+		$sql = 'DELETE FROM ' . HOOKUP_DATES_TABLE . "
+			WHERE topic_id = $topic_id";
+		$db->sql_query($sql);
+
+		$sql = 'DELETE FROM ' . HOOKUP_AVAILABLE_TABLE . "
+			WHERE topic_id = $topic_id";
+		$db->sql_query($sql);
+
+		$sql = 'DELETE FROM ' . HOOKUP_MEMBERS_TABLE . "
+			WHERE topic_id = $topic_id";
+		$db->sql_query($sql);
+	}]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[			$redirect_url = submit_post($mode, $post_data['post_subject'], $post_data['username'], $post_data['topic_type'], $poll, $data, $update_message);]]></find>
+				<action type="before-add"><![CDATA[			//Hookup Mod
+			$data['hookup_enabled'] = $post_data['hookup_enabled'];
+			$data['hookup_self_invite'] = $post_data['hookup_self_invite'];]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[if ($mode == 'post' || ($mode == 'edit' && $post_id == $post_data['topic_first_post_id']))
+{
+	$topic_type_toggle = posting_gen_topic_types($forum_id, $post_data['topic_type']);]]></find>
+				<action type="after-add"><![CDATA[	//Hookup mod
+	$template->assign_var('S_HOOKUP_ALLOWED', $hookup_status);
+	
+	if($hookup_status)
+	{
+		$user->add_lang('mods/hookup');
+		$template->assign_var('S_HOOKUP_CHECKED', $post_data['hookup_enabled'] ? ' checked="checked"' : '');
+		$template->assign_var('S_HOOKUP_SELF_INVITE_CHECKED', $post_data['hookup_self_invite'] ? ' checked="checked"' : '');
+	}
+	
+	if($mode == 'edit' && $post_data['hookup_enabled'])
+	{
+		//check if someone has already entered yes/no/maybe information
+		$sql = 'SELECT count(*) AS total FROM ' . HOOKUP_AVAILABLE_TABLE . ' WHERE topic_id=' . $topic_id;
+		$result = $db->sql_query($sql);
+		$count = $db->sql_fetchfield('total', 0, $result);
+		$template->assign_var('S_TOPIC_HAS_HOOKUP', $count > 0 ? true : false);
+	}
+	elseif($mode == 'edit' && !$post_data['hookup_enabled'])
+	{
+		//check if a hookup was previously disabled (to change the checkbox label text)
+		$sql = 'SELECT count(*) AS total FROM ' . HOOKUP_DATES_TABLE . ' WHERE topic_id=' . $topic_id;
+		$result = $db->sql_query($sql);
+		$date_count = $db->sql_fetchfield('total', 0, $result);
+		$sql = 'SELECT count(*) AS total FROM ' . HOOKUP_MEMBERS_TABLE . ' WHERE topic_id=' . $topic_id;
+		$result = $db->sql_query($sql);
+		$members_count = $db->sql_fetchfield('total', 0, $result);
+		
+		$template->assign_var('S_TOPIC_HAS_INACTIVE_HOOKUP', $date_count + $members_count > 0 ? true : false);
+	}]]></action>
+			</edit>
+		</open>
+
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[unset($poll_end, $poll_info, $voted_id);
+}]]></find>
+				<action type="after-add"><![CDATA[//Hookup mod
+include($phpbb_root_path . 'includes/viewtopic_hookup.' . $phpEx);]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/constants.php">
+			<edit>
+				<find><![CDATA[define('FIELD_DROPDOWN', 5);
+define('FIELD_DATE', 6);]]></find>
+				<action type="after-add"><![CDATA[//Hookup mod
+define('HOOKUP_UNSET', 0);
+define('HOOKUP_YES', 1);
+define('HOOKUP_NO', 2);
+define('HOOKUP_MAYBE', 3);]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[// Additional tables]]></find>
+				<action type="after-add"><![CDATA[//Hookup mod
+define('HOOKUP_DATES_TABLE', $table_prefix . 'hookup_dates');
+define('HOOKUP_AVAILABLE_TABLE', $table_prefix . 'hookup_available');
+define('HOOKUP_MEMBERS_TABLE', $table_prefix . 'hookup_members');]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/functions_posting.php">
+			<edit>
+				<find><![CDATA['topic_attachment'			=> (!empty($data['attachment_data'])) ? 1 : 0,]]></find>
+				<action type="after-add"><![CDATA[				//Hookup mod
+				'hookup_enabled'			=> $data['hookup_enabled'] ? 1 : 0,
+				'hookup_self_invite'		=> $data['hookup_self_invite'] ? 1 : 0,]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA['topic_attachment'			=> (!empty($data['attachment_data'])) ? 1 : (isset($data['topic_attachment']) ? $data['topic_attachment'] : 0),]]></find>
+				<action type="after-add"><![CDATA[				//Hookup mod
+				'hookup_enabled'			=> $data['hookup_enabled'] ? 1 : 0,
+				'hookup_self_invite'		=> $data['hookup_self_invite'] ? 1 : 0,]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<link href="{T_STYLESHEET_LINK}" rel="stylesheet" type="text/css" media="screen, projection" />]]></find>
+				<action type="before-add"><![CDATA[<!-- IF S_HAS_HOOKUP -->
+<link href="{T_THEME_PATH}/hookup.css" rel="stylesheet" type="text/css" />
+<link href="{T_THEME_PATH}/calendar-system.css" rel="stylesheet" type="text/css" />
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/posting_editor.html">
+			<edit>
+				<find><![CDATA[				<dd>{L_STICK_TOPIC_FOR_EXPLAIN}</dd>
+			</dl>
+			<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[			<!-- IF S_HOOKUP_ALLOWED -->
+			<dl>
+				<dt><label for="hookup_enabled">{L_ADD_HOOKUP}:</label></dt>
+				<dd>
+					<!-- IF S_TOPIC_HAS_HOOKUP -->
+					<input type="hidden" name="hookup_enabled" value="true"/>
+					{L_HOOKUP_DELETE_VIEWTOPIC_EXPLAIN}
+					<!-- ELSEIF S_TOPIC_HAS_INACTIVE_HOOKUP -->
+					<label for="hookup_enabled"><input type="checkbox" id="hookup_enabled" name="hookup_enabled"{S_HOOKUP_CHECKED} />{L_ADD_HOOKUP_REACTIVATE}</label><br/>
+					{L_ADD_HOOKUP_REACTIVATE_EXPLAIN}
+					<!-- ELSE -->
+					<label for="hookup_enabled"><input type="checkbox" id="hookup_enabled" name="hookup_enabled"{S_HOOKUP_CHECKED} />{L_ADD_HOOKUP_DESC}</label>
+					<!-- ENDIF -->
+				</dd>
+			</dl>
+			<dl>
+				<dt><label for="hookup_self_invite">{L_HOOKUP_SELF_INVITE}:</label></dt>
+				<dd>
+					<label for="hookup_self_invite"><input type="checkbox" id="hookup_self_invite" name="hookup_self_invite"{S_HOOKUP_SELF_INVITE_CHECKED} />{L_HOOKUP_SELF_INVITE_DESC}</label><br/>
+					{L_HOOKUP_SELF_INVITE_EXPLAIN}
+				</dd>
+			</dl>
+			<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_HAS_POLL -->]]></find>
+				<action type="before-add"><![CDATA[<!-- IF S_HAS_HOOKUP -->
+	<!-- INCLUDE viewtopic_hookup.html -->
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<diy-instructions lang="en">Delete Board-Cache after completing installation. 
+You will have to set the new permissions added by this mod manually in your forum permissions (or add them to the existing permission roles).
+If the Mod does not work correctly check in contrib/mod-compatibility.xml whether you have to apply additional changes to existing mods.</diy-instructions>
+		<diy-instructions lang="de">Leere den Board Cache nach der Installation. 
+Du musst die neuen Berechtigungen die von diesem Mod hinzugefügt wurden manuell in deinen Forumsberechtigungen oder Rollen setzen.
+Falls der Mod nicht korrekt funktioniert prüfe in der contrib/mod-compatibility.xml ob Änderungen an weiteren, vorhendenen Mods notwendig sind.</diy-instructions>
+		
+	</action-group>
+</mod>

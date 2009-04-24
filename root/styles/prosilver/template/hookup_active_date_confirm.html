@@ -1,0 +1,26 @@
+<!-- INCLUDE overall_header.html -->
+
+<form id="confirm" action="{S_CONFIRM_ACTION}" method="post">
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+
+	<h2>{L_SET_ACTIVE}</h2>
+	<p>{MESSAGE_TEXT}</p>
+	
+	<fieldset class="fields1">
+		<div><label for="title_prefix"><input type="checkbox" name="title_prefix" id="title_prefix" value="true" checked="checked"/> {L_SET_ACTIVE_TITLE_PREFIX}</label></div>
+		<div><label for="send_email"><input type="checkbox" name="send_email" id="send_email" value="true" checked="checked" /> {L_SET_ACTIVE_SEND_EMAIL}</label></div>
+		<div><label for="post_reply"><input type="checkbox" name="post_reply" id="post_reply" value="true" checked="checked" /> {L_SET_ACTIVE_POST_REPLY}</label></div>
+	</fieldset>
+	
+	<fieldset class="submit-buttons">
+		{S_HIDDEN_FIELDS}
+		<input type="submit" name="confirm" value="{L_YES}" class="button2" />&nbsp; 
+		<input type="submit" name="cancel" value="{L_NO}" class="button2" />
+	</fieldset>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+</form>
+
+<!-- INCLUDE overall_footer.html -->

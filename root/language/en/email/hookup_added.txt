@@ -1,0 +1,10 @@
+Subject: You have been invited to this meeting planner
+
+Hello {USERNAME},
+
+You have been invited to the "{TOPIC_TITLE}" meeting planner on "{SITENAME}". Please visit it and enter the information when you have time.
+
+You can view the topic and meeting planner here:
+{U_TOPIC}
+
+{EMAIL_SIG}

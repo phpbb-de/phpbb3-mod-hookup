@@ -1,0 +1,10 @@
+Subject: Du wurdest zu einem Terminplaner eingeladen
+
+Hallo {USERNAME},
+
+du wurdest zum Terminplaner „{TOPIC_TITLE}“ auf „{SITENAME}“ eingeladen. Bitte trage dort ein, an welchem der genannten Termine du Zeit hast.
+
+Du kannst das Thema und den Terminplaner hier anzeigen:
+{U_TOPIC}
+
+{EMAIL_SIG}

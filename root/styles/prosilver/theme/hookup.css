@@ -1,0 +1,91 @@
+#hookup-intro, #hookup-error-box, #hookup-active-date, #hookup-table, #hookup-add-date, #hookup-add-users, #hookup-add-groups, #hookup-submit {
+	margin: 1em;
+}
+
+#hookup-error-box {
+	color: red;
+	font-size: 12px;
+}
+
+#hookup-add-date, #hookup-add-users, #hookup-add-groups {
+	float: left;
+	padding: 1em;
+}
+
+fieldset input.submit {
+	display: block;
+	float: right;
+}
+
+
+table.table1 th.activedate, table.table1 td.activedate {
+	border-left: 3px solid #C54665;
+	border-right: 3px solid #C54665;
+}
+table.table1 th.activedate {
+	border-top: 3px solid #C54665;
+	
+}
+table.table1 td.activedate_bottom {
+	border-bottom: 3px solid #C54665;
+}
+
+#hookup-table-scrollwrapper {
+	overflow: auto;
+}
+
+#hookup-table table.table1 {
+	width: auto !important;
+}
+
+.summary-box {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.summary {
+	color: black !important;
+	float: left;
+	overflow: hidden;
+	text-align: center;
+}
+
+div.summary {
+	float: left;
+	color: black;
+}
+div.yes-bg, td.yes-bg {
+	background: #33CC00;
+}
+div.maybe-bg, td.maybe-bg {
+	background: #FFCC00;
+}
+div.no-bg, td.no-bg {
+	background: #FF3300;
+}
+div.unset-bg, td.unset-bg {
+	background: #ABABAB;
+}
+
+.comment {
+	position: relative;
+}
+
+.comment > span {
+	display: none;
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	left: 1em;
+	padding: 0.5em;
+	background: #F4F4F4;
+	border: 1px solid #0B2140;
+	color: #0B2140;
+	width: 30em;
+	white-space: normal;
+}
+
+.comment:hover > span {
+	display: block;
+}
