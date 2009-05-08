@@ -44,7 +44,7 @@
 
 		<history>
 			<entry>
-				<date>2009-MM-DD</date>
+				<date>2009-05-08</date>
 				<rev-version>1.0.0</rev-version>
 				<changelog lang="en">
 					<change>Initial Mod release</change>
@@ -94,11 +94,9 @@ CREATE TABLE `phpbb_hookup_members` (
 	KEY `topic_id` (`topic_id`)
 );
 
-ALTER TABLE `phpbb_topics`
-	ADD `hookup_enabled` tinyint(1) NOT NULL default '0',
-	ADD `hookup_active_date` int(11) default NULL,
-	ADD `hookup_self_invite` tinyint(1) NOT NULL default '0'
-;]]></sql>
+ALTER TABLE `phpbb_topics` ADD `hookup_enabled` tinyint(1) NOT NULL default '0';
+ALTER TABLE `phpbb_topics` ADD `hookup_active_date` int(11) default NULL;
+ALTER TABLE `phpbb_topics` ADD `hookup_self_invite` tinyint(1) NOT NULL default '0';]]></sql>
 
 		<copy>
 			<file from="root/includes/*.*" to="includes/*.*" />

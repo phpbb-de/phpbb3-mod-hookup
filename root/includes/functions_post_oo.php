@@ -8,17 +8,6 @@
 *
 */
 
-/*
-things to do:
-- attachments
-- document which functions take effect immediately and which require submit() to be called
-
-- move update_forum_tracking_info to syncer->execute()?
-- notifications on new topic
-- compare post_checksum
-- private messages incl. attachments
-*/
-
 if (!defined('IN_PHPBB'))
 {
 	exit;

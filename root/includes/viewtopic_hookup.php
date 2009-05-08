@@ -16,38 +16,6 @@ if (!defined('IN_PHPBB'))
 
 if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 {
-	/* DONE
-	 * - set active date
-	 * - summary at bottom of each date ("4 yes, 2 maybe, 1 no")
-	 * - timezones when adding dates!
-	 * - separate boxes like fieldsets in acp
-	 * - confirm boxes for set_active
-	 * - check duplicate dates
-	 * - who can invite new users/groups? owner/member
-	 * - who can delete dates/users?
-	 * - multiselect in js calendar?
-	 * - confirm user/date deletion ("do you really want to delete 2 users and 3 dates?")
-	 * - list of users who can participate in a separate table
-	 * - before adding users check if they can read the forum 
-	 * - notify new users via email/jabber
-	 * - notifications (new dates, set active)
-	 */
-	 
-	/* TODO
-	 * - copyright anpassen!
-	 * - members can delete dates in the past except the active date
-	 * - members can delete dates where they are the only person who voted (if the accidentally added the wrong date)
-	 * - 15 minute interval in js calendar and vertical dragging
-	 * - logging
-	 * - add input box where users can enter the reason why they chose no/maybe and display them as div-popup
-	 * - store who added which date and when and allow that user to delete the date for x minutes 
-	 * - coding guidelines: final check
-	 */
-	 
-	/* NICE-TO-HAVE
-	 * 
-	 */
-
 	if (!function_exists('generate_smilies'))
 	{
 		include($phpbb_root_path . 'includes/functions_posting.' . $phpEx);
