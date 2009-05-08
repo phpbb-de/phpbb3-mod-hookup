@@ -531,7 +531,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 	}
 
 	//Set active date
-	if ($is_hookup_owner && ($set_active > - 1))
+	if ($is_hookup_owner && ($set_active > -1))
 	{
 		if ($set_active != 0 && !isset($datelist[$set_active]))
 		{
