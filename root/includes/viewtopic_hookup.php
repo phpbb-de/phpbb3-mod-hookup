@@ -54,7 +54,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 	$invite_self = trim(request_var('invite_self', ''));
 	$add_users = trim(request_var('usernames', '', true)); //can't use add_user because the javascript popup requires the fields name to be "usernames"
 	$add_groups = request_var('add_groups', array(0));
-	$set_active = isset($_POST['set_active']) ? intval($_POST['set_active']) : (isset($_GET['set_active']) ? intval($_GET['set_active']) : false);
+	$set_active = request_var('set_active', -1);
 
 
 	//load list of groups for "add groups" box
@@ -531,7 +531,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 	}
 
 	//Set active date
-	if ($is_hookup_owner && $set_active !== false)
+	if ($is_hookup_owner && ($set_active > - 1))
 	{
 		if ($set_active != 0 && !isset($datelist[$set_active]))
 		{
