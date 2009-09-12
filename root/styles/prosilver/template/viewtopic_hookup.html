@@ -17,7 +17,7 @@
 			var set_display = 'block';
 		}
 		document.getElementById('show-all-dates-link').innerHTML = link_text;
-		
+
 		document.getElementById('hookup-table').style.display = set_display;
 		if(document.getElementById('hookup-add-date')) document.getElementById('hookup-add-date').style.display = set_display;
 		if(document.getElementById('hookup-add-users')) document.getElementById('hookup-add-users').style.display = set_display;
@@ -34,9 +34,8 @@
 
 <script type="text/javascript">
 <!--
-
-var panels = new Array('overview-panel'<!-- IF S_IS_HOOKUP_OWNER or S_IS_HOOKUP_MEMBER -->, 'add-date-panel'<!-- ENDIF --><!-- IF S_IS_SELF_INVITE and not S_IS_HOOKUP_OWNER -->, 'self-invite-panel'<!-- ENDIF --><!-- IF S_IS_HOOKUP_OWNER -->, 'add-user-panel', 'add-group-panel', 'delete-panel'<!-- ENDIF -->);
-var show_panel = 'overview-panel';
+	var panels = new Array('overview-panel'<!-- IF S_IS_HOOKUP_OWNER or S_IS_HOOKUP_MEMBER -->, 'add-date-panel'<!-- ENDIF --><!-- IF S_IS_SELF_INVITE and not S_IS_HOOKUP_OWNER -->, 'self-invite-panel'<!-- ENDIF --><!-- IF S_IS_HOOKUP_OWNER -->, 'add-user-panel', 'add-group-panel', 'delete-panel'<!-- ENDIF -->);
+	var show_panel = 'overview-panel';
 //-->
 </script>
 
@@ -62,11 +61,11 @@ var show_panel = 'overview-panel';
 <div class="panel" id="overview-panel">
 <div class="inner"><span class="corners-top"><span></span></span>
 <h2>{L_HOOKUP}</h2>
-<p class="author">{L_HOOKUP_DESC}</p>
+<p>{L_HOOKUP_DESC}</p>
 
 <!-- IF HOOKUP_ERRORS -->
 <div id="hookup-error-box">
-	{HOOKUP_ERRORS}
+	<p>{HOOKUP_ERRORS}</p>
 </div>
 <!-- ENDIF -->
 
@@ -106,33 +105,33 @@ var show_panel = 'overview-panel';
 			<!-- ENDIF -->
 		</tr>
 		<!-- END user -->
-		
+
 		<tr style="border-bottom: 3px double black;">
 			<td class="spacerow"></td>
-			
+
 			<!-- BEGIN date -->
 			<td<!-- IF date.S_IS_ACTIVE --> class="spacerow activedate"<!-- ELSE --> class="spacerow"<!-- ENDIF -->></td>
 			<!-- END date -->
 		</tr>
-		
+
 		<tr>
 			<td>{L_SUM}:</td>
 			<!-- BEGIN date -->
 				<td <!-- IF date.S_IS_ACTIVE -->class="activedate"<!-- ENDIF --> title="{date.DATE}: {date.YES_COUNT} {L_HOOKUP_YES}, {date.MAYBE_COUNT} {L_HOOKUP_MAYBE}, {date.NO_COUNT} {L_HOOKUP_NO}, {date.UNSET_COUNT} {L_HOOKUP_UNSET}">
 				<div class="summary-box">
-					<div class="summary yes-bg" style="width:{date.YES_PERCENT}%;">{date.YES_COUNT}</div>
-					<div class="summary maybe-bg" style="width:{date.MAYBE_PERCENT}%;">{date.MAYBE_COUNT}</div>
-					<div class="summary no-bg" style="width:{date.NO_PERCENT}%;">{date.NO_COUNT}</div>
-					<div class="summary unset-bg" style="width:{date.UNSET_PERCENT}%;">{date.UNSET_COUNT}</div>
+					<!-- IF date.YES_PERCENT --><div class="summary yes-bg" style="width: {date.YES_PERCENT}%;">{date.YES_COUNT}</div><!-- ENDIF -->
+					<!-- IF date.MAYBE_PERCENT --><div class="summary maybe-bg" style="width: {date.MAYBE_PERCENT}%;">{date.MAYBE_COUNT}</div><!-- ENDIF -->
+					<!-- IF date.NO_PERCENT --><div class="summary no-bg" style="width: {date.NO_PERCENT}%;">{date.NO_COUNT}</div><!-- ENDIF -->
+					<!-- IF date.UNSET_PERCENT --><div class="summary unset-bg" style="width: {date.UNSET_PERCENT}%;">{date.UNSET_COUNT}</div><!-- ENDIF -->
 				</div>
 				</td>
 			<!-- END date -->
 		</tr>
-		
+
 		<!-- IF S_IS_HOOKUP_OWNER -->
 		<tr>
 			<td>&nbsp;</td>
-			
+
 			<!-- BEGIN date -->
 			<!-- IF date.S_IS_ACTIVE -->
 				<td class="activedate activedate_bottom"><b>{L_ACTIVE_DATE}</b></td>
@@ -163,7 +162,7 @@ var show_panel = 'overview-panel';
 	<div class="inner"><span class="corners-top"><span></span></span>
 
 	<p>{L_HOOKUP_ADD_DATES_EXPLAIN}</p>
-	
+
 	<fieldset class="fields2">
 
 		<form method="post" action="{S_HOOKUP_ACTION}" id="hookup_date">
@@ -191,7 +190,7 @@ var show_panel = 'overview-panel';
 			textarea.scrollTop = textarea.scrollHeight;
 			//cal.hide();
 		}
-		
+
 		var cal = Calendar.setup({
 			//inputField	: "add_date",
 			ifFormat	: "{L_HOOKUP_DATEFORMAT_CALENDAR}",
@@ -203,7 +202,7 @@ var show_panel = 'overview-panel';
 		});
 		//document.getElementById('add_date').readOnly = true;
 		</script>
-		
+
 		</form>
 	</fieldset>
 
@@ -217,7 +216,7 @@ var show_panel = 'overview-panel';
 
 	<!-- IF S_USER_LOGGED_IN and not S_IS_HOOKUP_MEMBER-->
 		<p>{L_HOOKUP_INVITE_SELF_EXPLAIN}</p>
-		
+
 		<fieldset class="fields2">
 			<form method="post" action="{S_HOOKUP_ACTION}">
 			<input type="hidden" name="invite_self" value="join"/>
@@ -227,7 +226,7 @@ var show_panel = 'overview-panel';
 		</fieldset>
 	<!-- ELSEIF S_USER_LOGGED_IN and S_IS_HOOKUP_MEMBER-->
 		<p>{L_HOOKUP_INVITE_SELF_LEAVE_EXPLAIN}</p>
-		
+
 		<fieldset class="fields2">
 			<form method="post" action="{S_HOOKUP_ACTION}">
 			<input type="hidden" name="invite_self" value="leave"/>
@@ -248,7 +247,7 @@ var show_panel = 'overview-panel';
 	<div class="inner"><span class="corners-top"><span></span></span>
 
 	<p>{L_USERNAMES_EXPLAIN}</p>
-	
+
 	<fieldset class="fields2">
 		<form method="post" action="{S_HOOKUP_ACTION}" id="ucp">
 			<fieldset>
@@ -269,9 +268,9 @@ var show_panel = 'overview-panel';
 
 <div class="panel bg3" id="add-group-panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
-	
+
 	<p>{L_HOOKUP_ADD_GROUPS_EXPLAIN}</p>
-	
+
 	<fieldset class="fields2">
 		<form method="post" action="{S_HOOKUP_ACTION}">
 			<fieldset>
@@ -292,7 +291,7 @@ var show_panel = 'overview-panel';
 
 	<!-- IF S_HAS_USERS or S_HAS_DATES -->
 	<p>{L_HOOKUP_DELETE_EXPLAIN}</p>
-	
+
 	<fieldset class="fields1">
 		<form method="post" action="{S_HOOKUP_ACTION}">
 			<fieldset>
@@ -304,7 +303,7 @@ var show_panel = 'overview-panel';
 						<label for="delete_hookup_delete"><input type="radio" name="delete_hookup" id="delete_hookup_delete" value="delete"/>{L_DELETE_HOOKUP_DELETE}</label>
 					</dd>
 				</dl-->
-				
+
 				<!-- IF S_HAS_USERS -->
 				<dl>
 					<dt><label for="delete_user">{L_DELETE_USERS}:</label></dt>
@@ -317,7 +316,7 @@ var show_panel = 'overview-panel';
 					</dd>
 				</dl>
 				<!-- ENDIF -->
-				
+
 				<!-- IF S_HAS_DATES -->
 				<dl>
 					<dt><label for="delete_date">{L_DELETE_DATES}:</label></dt>
@@ -330,40 +329,36 @@ var show_panel = 'overview-panel';
 					</dd>
 				</dl>
 				<!-- ENDIF -->
-		
+
 				<input class="button1" type="submit" name="post" value="{L_SUBMIT}" />
 			</fieldset>
 		</form>
 	</fieldset>
-	
+
 	<hr class="dashed"/>
 	<!-- ENDIF -->
-	
+
 	<fieldset class="fields1">
 		<p>{L_DELETE_WHOLE_HOOKUP}:</p>
-	
+
 		<form method="post" action="{S_HOOKUP_ACTION}">
 			<fieldset>
 				<input type="hidden" name="delete_hookup" value="disable"/>
 				<dl>
 					<dt><label>{L_DELETE_HOOKUP_DISABLE}:</label></dt>
-					<dd>
-						<input class="button1" type="submit" name="post" value="{L_RUN}" /><br />
-						{L_DELETE_HOOKUP_DISABLE_EXPLAIN}
-					</dd>
+					<dd><input class="button1" type="submit" name="post" value="{L_HIDE_HOOKUP}" /></dd>
+					<dd>{L_DELETE_HOOKUP_DISABLE_EXPLAIN}</dd>
 				</dl>
 			</fieldset>
 		</form>
-				
+
 		<form method="post" action="{S_HOOKUP_ACTION}">
 			<fieldset>
 				<input type="hidden" name="delete_hookup" value="delete"/>
 				<dl>
 					<dt><label>{L_DELETE_HOOKUP_DELETE}:</label></dt>
-					<dd>
-						<input class="button1" type="submit" name="post" value="{L_RUN}" /><br />
-						{L_DELETE_HOOKUP_DELETE_EXPLAIN}
-					</dd>
+					<dd><input class="button1" type="submit" name="post" value="{L_DELETE_HOOKUP}" /></dd>
+					<dd>{L_DELETE_HOOKUP_DELETE_EXPLAIN}</dd>
 				</dl>
 			</fieldset>
 		</form>

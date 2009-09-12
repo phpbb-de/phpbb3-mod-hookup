@@ -34,7 +34,6 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 	}
 
 	$user->add_lang('mods/hookup');
-	$user->add_lang('acp/common'); //for L_RUN
 
 
 	$userlist = array();
@@ -98,7 +97,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 	$db->sql_freeresult($result);
 
 	//invite self
-	if (($topic_data['hookup_self_invite'] || $is_hookup_owner) && $invite_self == 'join' && !in_array($user->data['user_id'], $userids))
+	if (($topic_data['hookup_self_invite'] || $is_hookup_owner) && ($invite_self == 'join') && !in_array($user->data['user_id'], $userids))
 	{
 		//user or owner wants to join and is not a member yet.
 		$sql_array = array(
@@ -110,7 +109,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 		$db->sql_query($sql);
 		$userids[] = $user->data['user_id'];
 	}
-	elseif ($topic_data['hookup_self_invite'] && $invite_self == 'leave' && in_array($user->data['user_id'], $userids))
+	elseif ($topic_data['hookup_self_invite'] && ($invite_self == 'leave') && in_array($user->data['user_id'], $userids))
 	{
 		//user wants to leave and is a member, display confirmation box first
 		if (confirm_box(true))
@@ -218,7 +217,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 			$messenger->assign_vars(array(
 				'USERNAME'		=> $userdata['username'],
 				'TOPIC_TITLE'	=> $topic_data['topic_title'],
-				'U_TOPIC'	=> generate_board_url() . "/viewtopic.$phpEx?f=$forum_id&t=$topic_id",
+				'U_TOPIC'		=> generate_board_url() . "/viewtopic.$phpEx?f=$forum_id&t=$topic_id",
 			));
 			$messenger->send($userdata['user_notify_type']);
 		}
@@ -614,6 +613,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 
 				$post = new post($topic_id);
 				$post->post_text = $message;
+				$post->post_subject = sprintf($user->lang['SET_ACTIVE_POST_TITLE'], $user->format_date($datelist[$set_active]['date_time'], $user->lang['HOOKUP_DATEFORMAT_POST']));
 				$post->submit();
 			}
 
@@ -691,10 +691,10 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 		$total_count = count($userlist);
 		$unset_count = $total_count - ($yes_count + $maybe_count + $no_count);
 
-		$yes_percent = $total_count > 0 ? round(($yes_count / $total_count) * 100) : 0;
-		$maybe_percent = $total_count > 0 ? round(($maybe_count / $total_count) * 100) : 0;
-		$no_percent = $total_count > 0 ? round(($no_count / $total_count) * 100) : 0;
-		$unset_percent = 100 - ($yes_percent + $maybe_percent + $no_percent);
+		$yes_percent = $total_count > 0 ? floor(($yes_count / $total_count) * 100) : 0;
+		$maybe_percent = $total_count > 0 ? floor(($maybe_count / $total_count) * 100) : 0;
+		$no_percent = $total_count > 0 ? floor(($no_count / $total_count) * 100) : 0;
+		$unset_percent = ($unset_count) ? 100 - ($yes_percent + $maybe_percent + $no_percent) : 0;
 
 		$template->assign_block_vars('date', array(
 			'ID'			=> $hookup_date['date_id'],
@@ -709,7 +709,7 @@ if (isset($topic_data['hookup_enabled']) && $topic_data['hookup_enabled'])
 			'NO_PERCENT'	=> $no_percent,
 			'UNSET_COUNT'	=> $unset_count,
 			'UNSET_PERCENT'	=> $unset_percent,
-			'S_IS_ACTIVE'	=> $hookup_date['date_id'] == $topic_data['hookup_active_date'],
+			'S_IS_ACTIVE'	=> ($hookup_date['date_id'] == $topic_data['hookup_active_date']) ? true : false,
 			'U_SET_ACTIVE'	=> $viewtopic_url . '&amp;set_active=' . $hookup_date['date_id'],
 		));
 	}
