@@ -1,9 +1,7 @@
 <?php
-
 /**
 *
 * @package phpBB Hookup MOD
-* @version $Id$
 * @copyright (c) 2007, 2008, 2009 Pyramide und gn#36 ?
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *

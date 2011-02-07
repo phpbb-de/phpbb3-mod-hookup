@@ -2,7 +2,6 @@
 /** 
 *
 * @package functions_post_oo (object-oriented posting api)
-* @version $Id$
 * @copyright (c) 2006-2007 Pyramide (Frank Dreyer)
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License 
 *

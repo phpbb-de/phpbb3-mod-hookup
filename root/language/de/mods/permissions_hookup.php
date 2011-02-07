@@ -4,7 +4,6 @@
 * hookup mod [Deutsch - Du]
 *
 * @package language
-* @version $Id$
 * @copyright (c) 2006-2008 Pyramide (Frank Dreyer)
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
